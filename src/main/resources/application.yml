@@ -9,6 +9,10 @@ application:
 app:
   api-prefix: /api
 
+services-host:
+  identity-service: ${IDENTITY_SERVICE_URI:http://localhost:8081}
+  profile-service: ${PROFILE_SERVICE_URI:http://localhost:8082}
+
 spring:
   application:
     name: api-gateway
@@ -16,13 +20,13 @@ spring:
     gateway:
       routes:
         - id: identity-service
-          uri: ${IDENTITY_SERVICE_URI:http://localhost:8081}
+          uri: ${services-host.identity-service}
           predicates:
             - Path=${app.api-prefix}/identity/** # api prefix to reference the variable be defined in the app section
           filters:
             - StripPrefix=1 # =1 will replace one / in path (/api) | =2 will replace two / in path (/api/identity)
         - id: profile-service
-          uri: ${PROFILE_SERVICE_URI:http://localhost:8082}
+          uri: ${services-host.profile-service}
           predicates:
             - Path=${app.api-prefix}/profile/users/** # to add multiple paths use , to separate them
             # for an example - Path=${app.api-prefix}/profile/roles/**, ${app.api-prefix}/profile/internal/users/**, ...
