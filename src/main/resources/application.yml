@@ -12,6 +12,7 @@ app:
 services-host:
   identity-service: ${IDENTITY_SERVICE_URI:http://localhost:8081}
   profile-service: ${PROFILE_SERVICE_URI:http://localhost:8082}
+  notification-service: ${NOTIFICATION_SERVICE_URI:http://localhost:8083}
 
 spring:
   application:
@@ -28,7 +29,12 @@ spring:
         - id: profile-service
           uri: ${services-host.profile-service}
           predicates:
-            - Path=${app.api-prefix}/profile/users/** # to add multiple paths use , to separate them
-            # for an example - Path=${app.api-prefix}/profile/roles/**, ${app.api-prefix}/profile/internal/users/**, ...
+            - Path=${app.api-prefix}/profile/users/**
+          filters:
+            - StripPrefix=1
+        - id: notification-service
+          uri: ${services-host.notification-service}
+          predicates:
+            - Path=${app.api-prefix}/notification/** 
           filters:
             - StripPrefix=1
